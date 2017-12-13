@@ -34,13 +34,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //ToDo
-        //считывание из памяти списка уведомлений
+        //После считывания добавить в массив.
+        Cache.createInstance();
+        Cache.instance().loadDataFromStorage(getApplicationContext());
     }
 
     @Override
     protected void onDestroy() {
-        //ToDo
-        //Запись данных в память
+        Cache.instance().saveDataInStorage(this);
         super.onDestroy();
     }
 

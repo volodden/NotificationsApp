@@ -4,8 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.util.Date;
+import java.util.HashMap;
 
 public class CreateNotification extends AppCompatActivity {
+
+    public CreateNotification() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,7 +17,7 @@ public class CreateNotification extends AppCompatActivity {
         setContentView(R.layout.activity_create_notification);
     }
 
-    public class NotificationsData {
+    public static class NotificationsData {
 
         public NotificationsType type;
         public Date datetime;
@@ -25,11 +29,36 @@ public class CreateNotification extends AppCompatActivity {
             this.datetime = datetime;
             this.text = text;
             this.phoneNumber = phoneNumber;
+
+            //давать id при создании класса!
         }
     }
 
     public enum NotificationsType {
         PushNotification,
         SMSNotification
+    }
+
+    private final static String pushText = "push";
+    private final static String smsText = "sms";
+
+    public static String typeToStr(NotificationsType type) {
+        switch( type ) {
+            case PushNotification: return pushText;
+            case SMSNotification: return smsText;
+        }
+        //exception!
+        return "";
+    }
+
+    public static NotificationsType strToType(String type) {
+        if( type.equals(pushText) ) {
+            return NotificationsType.PushNotification;
+        }
+        if( type.equals(smsText) ) {
+            return NotificationsType.SMSNotification;
+        }
+        //exception!
+        return NotificationsType.PushNotification;
     }
 }
