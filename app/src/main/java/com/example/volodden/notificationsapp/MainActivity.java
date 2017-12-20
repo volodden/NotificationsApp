@@ -86,10 +86,12 @@ public class MainActivity extends AppCompatActivity {
             String text = data.getText();
             Date datetime = data.getDatetime();
             String number = data.getPhoneNumber();
+            String name = data.getName();
             intent.putExtra("type", type);
             intent.putExtra("text", text);
             intent.putExtra("datetime", datetime);
             intent.putExtra("number", number);
+            intent.putExtra("name", name);
         }
         startActivityForResult(intent, SEND_REQUEST);
 
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if( data == null || requestCode != SEND_REQUEST) {
+        if( data == null || requestCode != SEND_REQUEST || resultCode != RESULT_OK) {
             return;
         }
 

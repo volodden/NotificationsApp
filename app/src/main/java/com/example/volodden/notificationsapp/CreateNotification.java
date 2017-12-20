@@ -22,11 +22,12 @@ public class CreateNotification extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if( extras != null ) {
+            String name = (String) extras.get("name");
             NotificationsType type = (NotificationsType) extras.get("type");
             String text = (String) extras.get("text");
             Date datetime = (Date) extras.get("datetime");
             String number = (String) extras.get("phonenumber");
-            NotificationsData nd = new NotificationsData(type, datetime, text, number);
+            NotificationsData nd = new NotificationsData(name, type, datetime, text, number);
 
             //ToDo
             //Вставить значения
@@ -49,16 +50,22 @@ public class CreateNotification extends AppCompatActivity {
 
     public class NotificationsData {
 
+        public String name;
         public NotificationsType type;
         public Date datetime;
         public String text;
         public String phoneNumber;
 
-        NotificationsData(NotificationsType type, Date datetime, String text, String phoneNumber) {
+        NotificationsData(String name, NotificationsType type, Date datetime, String text, String phoneNumber) {
+            this.name = name;
             this.phoneNumber = phoneNumber;
             this.datetime = datetime;
             this.text = text;
             this.phoneNumber = phoneNumber;
+        }
+
+        public String getName() {
+            return name;
         }
 
         public NotificationsType getType() {
