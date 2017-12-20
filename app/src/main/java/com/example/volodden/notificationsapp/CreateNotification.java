@@ -63,26 +63,6 @@ public class CreateNotification extends AppCompatActivity {
             this.text = text;
             this.phoneNumber = phoneNumber;
         }
-
-        public String getName() {
-            return name;
-        }
-
-        public NotificationsType getType() {
-            return type;
-        }
-
-        public Date getDatetime() {
-            return datetime;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public String getPhoneNumber() {
-            return phoneNumber;
-        }
     }
 
     public enum NotificationsType {

@@ -82,11 +82,11 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, CreateNotification.class);
         if (data != null) {
-            CreateNotification.NotificationsType type = data.getType();
-            String text = data.getText();
-            Date datetime = data.getDatetime();
-            String number = data.getPhoneNumber();
-            String name = data.getName();
+            CreateNotification.NotificationsType type = data.type;
+            String text = data.text;
+            Date datetime = data.datetime;
+            String number = data.phoneNumber;
+            String name = data.name;
             intent.putExtra("type", type);
             intent.putExtra("text", text);
             intent.putExtra("datetime", datetime);
