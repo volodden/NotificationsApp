@@ -1,12 +1,14 @@
 package com.example.volodden.notificationsapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.util.Date;
-import java.util.HashMap;
 
 public class CreateNotification extends AppCompatActivity {
+
+    NotificationsData data;
 
     public CreateNotification() {
     }
@@ -15,9 +17,37 @@ public class CreateNotification extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_notification);
+
+        //получение всех объектов активити
+
+        Bundle extras = getIntent().getExtras();
+        if( extras != null ) {
+            NotificationsType type = (NotificationsType) extras.get("type");
+            String text = (String) extras.get("text");
+            Date datetime = (Date) extras.get("datetime");
+            String number = (String) extras.get("phonenumber");
+            NotificationsData nd = new NotificationsData(type, datetime, text, number);
+
+            //ToDo
+            //Вставить значения
+        }
+
+        //сделать лисенеры на все элементы
+        //обработка кнопки "назад"
+        //обработка кнопки "сохранить"
     }
 
-    public static class NotificationsData {
+    protected void onSave() {
+        Intent intent = new Intent();
+        //intent.putExtra("type", type);
+        //intent.putExtra("text", text);
+        //intent.putExtra("datetime", datetime);
+        //intent.putExtra("number", number);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    public class NotificationsData {
 
         public NotificationsType type;
         public Date datetime;
@@ -29,8 +59,22 @@ public class CreateNotification extends AppCompatActivity {
             this.datetime = datetime;
             this.text = text;
             this.phoneNumber = phoneNumber;
+        }
 
-            //давать id при создании класса!
+        public NotificationsType getType() {
+            return type;
+        }
+
+        public Date getDatetime() {
+            return datetime;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
         }
     }
 
