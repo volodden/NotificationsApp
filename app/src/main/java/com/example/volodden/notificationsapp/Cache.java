@@ -27,6 +27,8 @@ public class Cache {
     private final int CACHE_SIZE = 1000;
     private final String FILE_NAME = "cache.txt";
 
+    private static final String NULL_TEXT = "null";
+
     private static Cache instance;
 
     public static void createInstance() {
@@ -114,14 +116,14 @@ public class Cache {
                 String dateString = data.getString(CreateNotification.date_text);
 
                 Date date;
-                if( !dateString.equals("null") ) { //TODO убрать
+                if( !dateString.equals(NULL_TEXT) ) { //TODO убрать
                     DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
                     date = format.parse(dateString);
                 } else {
                     date = null;
                 }
 
-                if( phoneString.equals("null") ) {
+                if( phoneString.equals(NULL_TEXT) ) {
                     phoneString = null;
                 }
                 CreateNotification.NotificationsType type = CreateNotification.strToType(typeString);
@@ -155,13 +157,13 @@ public class Cache {
 
 
                 //TODO test
-                obj.put(CreateNotification.date_text, "null");//cache.get(i).datetime.toString());
+                obj.put(CreateNotification.date_text, NULL_TEXT);//cache.get(i).datetime.toString());
 
 
                 if( cache.get(i).phoneNumber != null ) {
                     obj.put(CreateNotification.phone_text, cache.get(i).phoneNumber);
                 } else {
-                    obj.put(CreateNotification.phone_text, "null");
+                    obj.put(CreateNotification.phone_text, NULL_TEXT);
                 }
                 json.put(obj);
             }
