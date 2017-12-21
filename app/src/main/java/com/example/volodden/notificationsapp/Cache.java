@@ -1,7 +1,6 @@
 package com.example.volodden.notificationsapp;
 
 import android.content.Context;
-import android.support.v4.util.Pair;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -16,30 +15,30 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 
 public class Cache {
 
-    private Map<String, CreateNotification.NotificationsData> cache; //А нужен ли нам LruCache, когда хватит просто Map?
+    private ArrayList<CreateNotification.NotificationsData> cache; //А нужен ли нам LruCache, когда хватит просто Map?
 
     private final int CACHE_SIZE = 1000;
-    private final String FILE_NAME = "kdscache.txt";
+    private final String FILE_NAME = "cache.txt";
 
-    private static Cache _instance;
+    private static final String NULL_TEXT = "null";
+
+    private static Cache instance;
 
     public static void createInstance() {
-        if( null == _instance ) {
-            _instance = new Cache();
-            _instance.init();
+        if( instance == null ) {
+            instance = new Cache();
         }
     }
 
-    static public Cache instance() {
-        return _instance;
+    static public Cache getInstance() {
+        return instance;
     }
 
     Cache() {
@@ -47,16 +46,25 @@ public class Cache {
     }
 
     private void init() {
-        cache = new HashMap<String, CreateNotification.NotificationsData>(CACHE_SIZE);
+        cache = new ArrayList<CreateNotification.NotificationsData>(CACHE_SIZE);
     }
 
-    public CreateNotification.NotificationsData getData(String key) {
-        return cache.get(key); // null if (key, value) doesn't exist
+    public CreateNotification.NotificationsData getData(int position) {
+        return cache.get(position);
     }
 
-    public void setData(String key, CreateNotification.NotificationsData value) {
-        cache.put(key, value);
+    public ArrayList<CreateNotification.NotificationsData> getAllData() {
+        return cache;
     }
+
+    public void setData(CreateNotification.NotificationsData value) {
+        cache.add(value);
+    }
+
+    public void setAllData(ArrayList<CreateNotification.NotificationsData> data) {
+        cache = data;
+    }
+
 
     // В onCreate MainActivity:
     // Cache.createInstance();
@@ -101,20 +109,29 @@ public class Cache {
         for( int i = 0; i < json.length(); ++i ) {
             try {
                 JSONObject data = json.getJSONObject(i);
-                String key = data.getString(Helper.key);
-                String text = data.getString(Helper.text);
-                String phone = data.getString(Helper.phone);
+                String nameString = data.getString(CreateNotification.name_text);
+                String typeString = data.getString(CreateNotification.type_text);
+                String textString = data.getString(CreateNotification.text_text);
+                String phoneString = data.getString(CreateNotification.phone_text);
+                String dateString = data.getString(CreateNotification.date_text);
 
-                String dateString = data.getString(Helper.time);
-                DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-                Date date = format.parse(dateString);
+                Date date;
+                if( !dateString.equals(NULL_TEXT) ) { //TODO убрать
+                    DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+                    date = format.parse(dateString);
+                } else {
+                    date = null;
+                }
 
-                Date time = new Date();
-                CreateNotification.NotificationsType type = CreateNotification.strToType(data.getString(Helper.text));
+                if( phoneString.equals(NULL_TEXT) ) {
+                    phoneString = null;
+                }
+                CreateNotification.NotificationsType type = CreateNotification.strToType(typeString);
+
                 CreateNotification.NotificationsData description =
-                        new CreateNotification.NotificationsData("as", type, time, text, phone);
+                        new CreateNotification.NotificationsData(nameString, type, date, textString, phoneString);
 
-                //Создать новое уведомление.
+                cache.add(description);
             } catch (JSONException e) {
                 e.printStackTrace();
                 //throw new RuntimeException(e);
@@ -128,24 +145,32 @@ public class Cache {
     }
 
     //Вызывать в onDestroy MainActivity
-    public void saveDataInStorage(Context context) throws RuntimeException {
+    public boolean saveDataInStorage(Context context) throws RuntimeException {
 
         JSONArray json = new JSONArray();
-        for( String key : cache.keySet() ) {
+        for( int i = 0; i < cache.size(); ++i ) {
             try {
                 JSONObject obj = new JSONObject();
-                obj.put(Helper.key, key);
-                CreateNotification.NotificationsData data = cache.get(key);
-                obj.put(Helper.time, data.datetime);
-                obj.put(Helper.phone, data.phoneNumber);
-                obj.put(Helper.text, data.text);
-                obj.put(Helper.type, data.type);
+                obj.put(CreateNotification.name_text, cache.get(i).name);
+                obj.put(CreateNotification.type_text, CreateNotification.typeToStr(cache.get(i).type));
+                obj.put(CreateNotification.text_text, cache.get(i).text);
+
+
+                //TODO test
+                obj.put(CreateNotification.date_text, NULL_TEXT);//cache.get(i).datetime.toString());
+
+
+                if( cache.get(i).phoneNumber != null ) {
+                    obj.put(CreateNotification.phone_text, cache.get(i).phoneNumber);
+                } else {
+                    obj.put(CreateNotification.phone_text, NULL_TEXT);
+                }
                 json.put(obj);
             }
             catch (JSONException e) {
                 //Log.i("CACHE_EXCPT", "JSON Exception " + e.toString());
                 e.printStackTrace();
-                return;
+                return false;
             }
         }
 
@@ -153,7 +178,7 @@ public class Cache {
         try {
             if( !file.exists() ) {
                 if( !file.createNewFile() ) {
-                    return;
+                    return false;
                     //throw new RuntimeException("File isn't created");
                 }
             }
@@ -171,13 +196,7 @@ public class Cache {
             throw new RuntimeException(e);
         }
 
+        Log.i("CACHE", json.toString());
+        return  true;
     }
-}
-
-class Helper {
-    final static String key = "key";
-    final static String time = "time";
-    final static String phone = "phone";
-    final static String text = "description";
-    final static String type = "type";
 }
