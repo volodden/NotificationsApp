@@ -58,7 +58,7 @@ public class CreateNotification extends AppCompatActivity {
 
         NotificationsData(String name, NotificationsType type, Date datetime, String text, String phoneNumber) {
             this.name = name;
-            this.phoneNumber = phoneNumber;
+            this.type = type;
             this.datetime = datetime;
             this.text = text;
             this.phoneNumber = phoneNumber;
