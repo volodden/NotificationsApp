@@ -52,5 +52,4 @@ public class PermissionChecker {
 
         //Log.i("ALERT", "Open dialog");
     }
-
 }

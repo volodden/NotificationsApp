@@ -42,7 +42,6 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world", "mail@.ru:12345"
     };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -107,9 +106,6 @@ public class LoginActivity extends AppCompatActivity {
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-
-        email = "mail@.ru";
-        password = "12345";
 
         boolean cancel = false;
         View focusView = null;

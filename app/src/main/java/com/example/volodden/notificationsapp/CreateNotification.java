@@ -4,35 +4,33 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TimePicker;
-import android.widget.Toast;
-
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
 public class CreateNotification extends AppCompatActivity {
 
     private static NotificationsData Data;
-    static final String NAME = "name", TEXT = "text", PHONE = "phone", TYPE = "type", YEAR = "year",
-                        MONTH = "month", DAY = "day", HOUR = "hour", MINUTE = "minute";
+    private static final String YEAR = "year";
+    private static final String MONTH = "month";
+    private static final String DAY = "day";
+    private static final String HOUR = "hour";
+    private static final String  MINUTE = "minute";
 
-    public CreateNotification()
-    {
+    NotificationsData data;
 
+    public CreateNotification() {
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (outState != null) {
-            outState.putString(NAME, Data.name);
-            outState.putString(TEXT, Data.text);
-            outState.putString(PHONE, Data.phoneNumber);
-            outState.putString(TYPE, typeToStr(Data.type));
+            outState.putString(name_text, Data.name);
+            outState.putString(text_text, Data.text);
+            outState.putString(phone_text, Data.phoneNumber);
+            outState.putString(type_text, typeToStr(Data.type));
             outState.putInt(YEAR, Data.datetime.getYear());
             outState.putInt(MONTH, Data.datetime.getMonth());
             outState.putInt(DAY, Data.datetime.getDay());
@@ -71,10 +69,10 @@ public class CreateNotification extends AppCompatActivity {
             {
                 super.onRestoreInstanceState(savedInstanceState);
                 Data = new NotificationsData();
-                Data.name = savedInstanceState.getString(NAME);
-                Data.phoneNumber = savedInstanceState.getString(PHONE);
-                Data.text = savedInstanceState.getString(TEXT);
-                Data.type = strToType(savedInstanceState.getString(TYPE));
+                Data.name = savedInstanceState.getString(name_text);
+                Data.phoneNumber = savedInstanceState.getString(phone_text);
+                Data.text = savedInstanceState.getString(text_text);
+                Data.type = strToType(savedInstanceState.getString(type_text));
                 Data.datetime = new Date(savedInstanceState.getInt(YEAR), savedInstanceState.getInt(MONTH), savedInstanceState.getInt(DAY),
                         savedInstanceState.getInt(HOUR), savedInstanceState.getInt(MINUTE));
                 SetFormFromData();
@@ -166,22 +164,25 @@ public class CreateNotification extends AppCompatActivity {
 
     public static class NotificationsData {
 
+        public String name;
         public NotificationsType type;
         public Date datetime;
         public String text;
         public String phoneNumber;
-        public String name;
 
         NotificationsData(String name, NotificationsType type, Date datetime, String text, String phoneNumber) {
-            this.type = type;
             this.name = name;
-            this.phoneNumber = phoneNumber;
+            this.type = type;
             this.datetime = datetime;
             this.text = text;
-            //давать id при создании класса!
+            this.phoneNumber = phoneNumber;
         }
-        NotificationsData()
-        {
+
+        NotificationsData() {}
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 
@@ -190,8 +191,14 @@ public class CreateNotification extends AppCompatActivity {
         SMSNotification
     }
 
-    private final static String pushText = "push";
-    private final static String smsText = "sms";
+    public final static String name_text = "name";
+    public final static String type_text = "type";
+    public final static String date_text = "datetime";
+    public final static String text_text = "text";
+    public final static String phone_text = "phone";
+
+    public final static String pushText = "push";
+    public final static String smsText = "sms";
 
     public static String typeToStr(NotificationsType type) {
         switch( type ) {
@@ -213,8 +220,6 @@ public class CreateNotification extends AppCompatActivity {
         return NotificationsType.PushNotification;
     }
 
-
-
     public void onButtonSms(View view)
     {
         findViewById(R.id.Phone).setVisibility(View.VISIBLE);
@@ -228,7 +233,6 @@ public class CreateNotification extends AppCompatActivity {
     public void onButtonCreate(View view)
     {
         //UpdateData();
-
     }
 
     public void onButtonBack(View view)
