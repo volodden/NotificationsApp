@@ -48,7 +48,7 @@ public class CreateNotification extends AppCompatActivity {
         finish();
     }
 
-    public class NotificationsData {
+    public static class NotificationsData {
 
         public String name;
         public NotificationsType type;
@@ -62,6 +62,11 @@ public class CreateNotification extends AppCompatActivity {
             this.datetime = datetime;
             this.text = text;
             this.phoneNumber = phoneNumber;
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 
