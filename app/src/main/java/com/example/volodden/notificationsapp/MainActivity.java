@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //CreateNotification.NotificationsData notification = createNewNotification(null);
+
+                //TODO test
                 CreateNotification.NotificationsData notification = new CreateNotification.NotificationsData("КОТИКИ",
                         CreateNotification.NotificationsType.PushNotification,
                         null, "ololo", null);
@@ -47,10 +49,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Cache.createInstance();
-        if( Cache.instance().loadDataFromStorage(getApplicationContext()) ) {
-            notifications = Cache.instance().getAllData();
-            Log.i("CRN", "Yes, load from memory");
+        if( Cache.getInstance().loadDataFromStorage(getApplicationContext()) ) {
+            Log.i("CRT_C", "Cache exist");
+            notifications = Cache.getInstance().getAllData();
+            Log.i("CRT_C", "Yes, load from memory");
         } else {
+            Log.i("CRT_C", "Cache no exist");
             notifications = new ArrayList<CreateNotification.NotificationsData>();
             notifications.add(new CreateNotification.NotificationsData("Рыжик",
                 CreateNotification.NotificationsType.PushNotification,
@@ -89,7 +93,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Cache.instance().saveDataInStorage(this);
+        Log.i("DST_C", "Destroy");
+        Cache.getInstance().setAllData(notifications);
+        if( Cache.getInstance().saveDataInStorage(this) ) {
+            Log.i("DST_C", "Cashe saved");
+        } else {
+            Log.i("DST_C", "Savecache error...");
+        }
         super.onDestroy();
     }
 
