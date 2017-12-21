@@ -22,11 +22,11 @@ public class CreateNotification extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if( extras != null ) {
-            String name = (String) extras.get("name");
-            NotificationsType type = (NotificationsType) extras.get("type");
-            String text = (String) extras.get("text");
-            Date datetime = (Date) extras.get("datetime");
-            String number = (String) extras.get("phonenumber");
+            String name = (String) extras.get(name_text);
+            NotificationsType type = (NotificationsType) extras.get(type_text);
+            String text = (String) extras.get(text_text);
+            Date datetime = (Date) extras.get(date_text);
+            String number = (String) extras.get(phone_text);
             NotificationsData nd = new NotificationsData(name, type, datetime, text, number);
 
             //ToDo
@@ -75,8 +75,14 @@ public class CreateNotification extends AppCompatActivity {
         SMSNotification
     }
 
-    private final static String pushText = "push";
-    private final static String smsText = "sms";
+    public final static String name_text = "name";
+    public final static String type_text = "type";
+    public final static String date_text = "datetime";
+    public final static String text_text = "text";
+    public final static String phone_text = "phone";
+
+    public final static String pushText = "push";
+    public final static String smsText = "sms";
 
     public static String typeToStr(NotificationsType type) {
         switch( type ) {

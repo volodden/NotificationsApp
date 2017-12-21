@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -34,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //CreateNotification.NotificationsData notification = createNewNotification(null);
-
-                CreateNotification.NotificationsData notification = new CreateNotification.NotificationsData("NAME",
+                CreateNotification.NotificationsData notification = new CreateNotification.NotificationsData("КОТИКИ",
                         CreateNotification.NotificationsType.PushNotification,
                         null, "ololo", null);
+
                 if (notification != null) {
                     notifications.add(notification);
                     adapter.notifyDataSetChanged();
@@ -45,16 +46,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //ToDo
-        //После считывания добавить в массив.
-        //Cache.createInstance();
-        //notifications = Cache.instance().loadDataFromStorage(getApplicationContext());
-        //if( notifications == null ) {
+        Cache.createInstance();
+        if( Cache.instance().loadDataFromStorage(getApplicationContext()) ) {
+            notifications = Cache.instance().getAllData();
+            Log.i("CRN", "Yes, load from memory");
+        } else {
             notifications = new ArrayList<CreateNotification.NotificationsData>();
-            //notifications.add("Рыжик");
-            //notifications.add("Барсик");
-            //notifications.add("Мурзик");
-        //}
+            notifications.add(new CreateNotification.NotificationsData("Рыжик",
+                CreateNotification.NotificationsType.PushNotification,
+                null, "ololo", null));
+            notifications.add(new CreateNotification.NotificationsData("Барсик",
+                CreateNotification.NotificationsType.PushNotification,
+                null, "ololo", null));
+            notifications.add(new CreateNotification.NotificationsData("Мурзик",
+                CreateNotification.NotificationsType.PushNotification,
+                null, "ololo", null));
+        }
 
         final ListView notificationList = (ListView) findViewById(R.id.notification_list);
 
@@ -86,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    //На каждом уведомлении будет кнопка "просмотра", которая открывает CreateNotificationActivity.
-
     protected CreateNotification.NotificationsData createNewNotification(CreateNotification.NotificationsData data) {
 
         Intent intent = new Intent(this, CreateNotification.class);
@@ -97,11 +102,11 @@ public class MainActivity extends AppCompatActivity {
             Date datetime = data.datetime;
             String number = data.phoneNumber;
             String name = data.name;
-            intent.putExtra("type", type);
-            intent.putExtra("text", text);
-            intent.putExtra("datetime", datetime);
-            intent.putExtra("number", number);
-            intent.putExtra("name", name);
+            intent.putExtra(CreateNotification.type_text, type);
+            intent.putExtra(CreateNotification.text_text, text);
+            intent.putExtra(CreateNotification.date_text, datetime);
+            intent.putExtra(CreateNotification.phone_text, number);
+            intent.putExtra(CreateNotification.name_text, name);
         }
 
         startActivityForResult(intent, SEND_REQUEST);
@@ -118,11 +123,11 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Bundle extras = getIntent().getExtras();
-        String name = (String) extras.get("name");
-        CreateNotification.NotificationsType type = (CreateNotification.NotificationsType) extras.get("type");
-        String text = (String) extras.get("text");
-        Date datetime = (Date) extras.get("datetime");
-        String number = (String) extras.get("phonenumber");
+        String name = (String) extras.get(CreateNotification.name_text);
+        CreateNotification.NotificationsType type = (CreateNotification.NotificationsType) extras.get(CreateNotification.type_text);
+        String text = (String) extras.get(CreateNotification.text_text);
+        Date datetime = (Date) extras.get(CreateNotification.date_text);
+        String number = (String) extras.get(CreateNotification.phone_text);
         nd = new CreateNotification.NotificationsData(name, type, datetime, text, number);
     }
 }
