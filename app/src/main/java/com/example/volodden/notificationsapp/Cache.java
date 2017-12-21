@@ -111,8 +111,15 @@ public class Cache {
 
                 Date time = new Date();
                 CreateNotification.NotificationsType type = CreateNotification.strToType(data.getString(Helper.text));
+
+
+
+                //TODO
+                //name
+
+
                 CreateNotification.NotificationsData description =
-                        new CreateNotification.NotificationsData(type, time, text, phone);
+                        new CreateNotification.NotificationsData("NAME", type, time, text, phone);
 
                 //Создать новое уведомление.
             } catch (JSONException e) {
