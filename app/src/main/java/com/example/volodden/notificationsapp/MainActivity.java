@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -23,15 +24,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                createNewNotification(null);
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//                createNewNotification(null);
+//            }
+//        });
 
         //ToDo
         //После считывания добавить в массив.
@@ -46,6 +47,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //На каждом уведомлении будет кнопка "просмотра", которая открывает CreateNotificationActivity.
+
+    public void onButtonNotificationClick(View view)
+    {
+//        if (view.getId() == R.id.fab)
+//            Toast.makeText(getApplicationContext(), "PARAPRAPRA", Toast.LENGTH_SHORT).show();
+        createNewNotification(null);
+    }
 
     protected void createNewNotification(CreateNotification.NotificationsData data) {
 
