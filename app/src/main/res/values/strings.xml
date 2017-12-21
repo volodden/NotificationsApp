@@ -14,4 +14,12 @@
         completions."
     </string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="push">push</string>
+    <string name="sms">sms</string>
+    <string name="notification_name">Notification name</string>
+    <string name="msg_text">Write text here...</string>
+    <string name="phone_number_Denis">+79261251902</string>
+    <string name="back">back</string>
+    <string name="create">create</string>
+    <string name="save">save</string>
 </resources>

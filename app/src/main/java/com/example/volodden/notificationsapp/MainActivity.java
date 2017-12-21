@@ -18,7 +18,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int SEND_REQUEST = 42;
+    public static final int SEND_REQUEST = 42;
+    public static final int RESULT_OK = 999;
+    public static final int RESULT_CANCEL = 23;
+    public static final String RESULT = "result";
+
 
     private ArrayList<CreateNotification.NotificationsData> notifications;
     private ArrayAdapter<CreateNotification.NotificationsData> adapter;
@@ -34,12 +38,12 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //CreateNotification.NotificationsData notification = createNewNotification(null);
+                CreateNotification.NotificationsData notification = createNewNotification(null);
 
                 //TODO test
-                CreateNotification.NotificationsData notification = new CreateNotification.NotificationsData("КОТИКИ",
-                        CreateNotification.NotificationsType.PushNotification,
-                        null, "ololo", null);
+//                CreateNotification.NotificationsData notification = new CreateNotification.NotificationsData("КОТИКИ",
+//                        CreateNotification.NotificationsType.PushNotification,
+//                        null, "ololo", null);
 
                 if (notification != null) {
                     notifications.add(notification);
@@ -87,7 +91,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // устанавливаем для списка адаптер
+        notificationList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                notifications.remove(position);
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
         notificationList.setAdapter(adapter);
     }
 
@@ -107,10 +119,10 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, CreateNotification.class);
         if (data != null) {
-            CreateNotification.NotificationsType type = data.type;
+            String type = CreateNotification.typeToStr(data.type);
             String text = data.text;
-            Date datetime = data.datetime;
-            String number = data.phoneNumber;
+            String datetime = data.datetime.toString();
+            String number = data.phoneNumber == null ? CreateNotification.null_text : data.phoneNumber;
             String name = data.name;
             intent.putExtra(CreateNotification.type_text, type);
             intent.putExtra(CreateNotification.text_text, text);
@@ -133,11 +145,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Bundle extras = getIntent().getExtras();
-        String name = (String) extras.get(CreateNotification.name_text);
-        CreateNotification.NotificationsType type = (CreateNotification.NotificationsType) extras.get(CreateNotification.type_text);
-        String text = (String) extras.get(CreateNotification.text_text);
-        Date datetime = (Date) extras.get(CreateNotification.date_text);
-        String number = (String) extras.get(CreateNotification.phone_text);
+        String name = (String) extras.getString(CreateNotification.name_text);
+        CreateNotification.NotificationsType type = CreateNotification.strToType(extras.getString(CreateNotification.type_text));
+        String text = (String) extras.getString(CreateNotification.text_text);
+        //TODO
+        Date datetime = null;// = (Date) extras.getString(CreateNotification.date_text);
+        String number = CreateNotification.setPhone(extras.getString(CreateNotification.phone_text));
         nd = new CreateNotification.NotificationsData(name, type, datetime, text, number);
     }
 }

@@ -3,163 +3,110 @@ package com.example.volodden.notificationsapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.TimePicker;
 import java.util.Date;
 
 public class CreateNotification extends AppCompatActivity {
 
-    private static NotificationsData Data;
-    private static final String YEAR = "year";
-    private static final String MONTH = "month";
-    private static final String DAY = "day";
-    private static final String HOUR = "hour";
-    private static final String  MINUTE = "minute";
-
-    NotificationsData data;
+    private NotificationsData data;
 
     public CreateNotification() {
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (outState != null) {
-            outState.putString(name_text, Data.name);
-            outState.putString(text_text, Data.text);
-            outState.putString(phone_text, Data.phoneNumber);
-            outState.putString(type_text, typeToStr(Data.type));
-            outState.putInt(YEAR, Data.datetime.getYear());
-            outState.putInt(MONTH, Data.datetime.getMonth());
-            outState.putInt(DAY, Data.datetime.getDay());
-            outState.putInt(HOUR, Data.datetime.getHours());
-            outState.putInt(MINUTE, Data.datetime.getMinutes());
+        if( outState != null ) {
+            outState.putString(name_text, data.name);
+            outState.putString(text_text, data.text);
+            outState.putString(phone_text, data.phoneNumber);
+            outState.putString(type_text, typeToStr(data.type));
+            //ToDo
+            //date
             super.onSaveInstanceState(outState);
         }
     }
-
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        if (savedInstanceState != null)
-//        {
-//            super.onRestoreInstanceState(savedInstanceState);
-//            Data.name = savedInstanceState.getString(NAME);
-//            Data.phoneNumber = savedInstanceState.getString(PHONE);
-//            Data.text = savedInstanceState.getString(TEXT);
-//            Data.type = strToType(savedInstanceState.getString(TYPE));
-//            Data.datetime = new Date(savedInstanceState.getInt(YEAR), savedInstanceState.getInt(MONTH), savedInstanceState.getInt(DAY),
-//                    savedInstanceState.getInt(HOUR), savedInstanceState.getInt(MINUTE));
-//        }
-//        //UpdateFormfromData();
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_notification);
 
-        Bundle extras = getIntent().getExtras();
-        if (savedInstanceState != null)
+        String name = null;
+        String typeString = null;
+        String text = null;
+        String dateString = null;
+        String phone = null;
+
+        DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
+        TimePicker timePicker = (TimePicker) findViewById(R.id.timePicker);
+        EditText editTextName = (EditText) findViewById(R.id.name);
+        EditText editTextPhone = (EditText) findViewById(R.id.phone);
+        EditText editTextMSG = (EditText) findViewById(R.id.msgtext);
+
+        Log.i("CRN", "Start");
+        if( savedInstanceState == null )
         {
-            if(extras != null)
-                SetAllFromExtra();
-            else
-            {
-                super.onRestoreInstanceState(savedInstanceState);
-                Data = new NotificationsData();
-                Data.name = savedInstanceState.getString(name_text);
-                Data.phoneNumber = savedInstanceState.getString(phone_text);
-                Data.text = savedInstanceState.getString(text_text);
-                Data.type = strToType(savedInstanceState.getString(type_text));
-                Data.datetime = new Date(savedInstanceState.getInt(YEAR), savedInstanceState.getInt(MONTH), savedInstanceState.getInt(DAY),
-                        savedInstanceState.getInt(HOUR), savedInstanceState.getInt(MINUTE));
-                SetFormFromData();
+            Log.i("CRN", "Start savedInstance null");
+            Bundle extras = getIntent().getExtras();
+            if( extras != null ) {
+                Log.i("CRN", "Start Bundle not null");
+                name = extras.getString(name_text);
+                typeString = extras.getString(type_text);
+                text = extras.getString(text_text);
+                dateString = extras.getString(date_text);
+                phone = setPhone(extras.getString(phone_text));
+            } else {
+                choiseRadioButton(pushText);
+                return;
             }
+        } else {
+            name = savedInstanceState.getString(name_text);
+            typeString = savedInstanceState.getString(type_text);
+            text = savedInstanceState.getString(text_text);
+            dateString = savedInstanceState.getString(CreateNotification.date_text);
+            phone = setPhone(savedInstanceState.getString(CreateNotification.phone_text));
         }
-        else
-        {
-            InitializeData();
-            //SetFormFromData();
+
+        editTextName.setText(name);
+        editTextMSG.setText(text);
+
+        editTextName.setSelection(editTextName.getText().length());
+
+        NotificationsType type = CreateNotification.strToType(typeString);
+
+        //ToDo
+        Date datetime = null;
+        //timePicker.set()
+        //datePicker.set()
+
+        data = new NotificationsData(name, type, datetime, text, phone);
+    }
+
+    public static String setPhone(String number) {
+        if( number.equals(null_text) ) {
+            return "";
+        } else {
+            return number;
         }
     }
 
-//    protected void onSave() {
-//        Intent intent = new Intent();
-//        //intent.putExtra("type", type);
-//        //intent.putExtra("text", text);
-//        //intent.putExtra("datetime", datetime);
-//        //intent.putExtra("number", number);
-//        setResult(RESULT_OK, intent);
-//        finish();
-//    }
-
-    public void InitializeData()
-    {
-        DatePicker datePicker = (DatePicker)findViewById(R.id.datePicker);
-        TimePicker timePicker = (TimePicker)findViewById(R.id.timePicker);
-        Date date = new Date(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getHour(), timePicker.getMinute());
-        String text = ((EditText)findViewById(R.id.Text)).getText().toString();
-        String phone = ((EditText)findViewById(R.id.Phone)).getText().toString();
-        String name = ((EditText)findViewById(R.id.Name)).getText().toString();
-        //RadioButton rbPush = (RadioButton)findViewById(R.id.rbPush);
-        //RadioButton rbSms = (RadioButton)findViewById(R.id.rbSms);
-        Data = new NotificationsData(name, NotificationsType.PushNotification, date, text, phone);
-    }
-
-//    public void UpdateData()
-//    {
-//        DatePicker datePicker = (DatePicker)findViewById(R.id.datePicker);
-//        TimePicker timePicker = (TimePicker)findViewById(R.id.timePicker);
-//        RadioButton rbPush = (RadioButton)findViewById(R.id.rbPush);
-//        //RadioButton rbSms = (RadioButton)findViewById(R.id.rbSms);
-//        Data.datetime = new Date(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getHour(), timePicker.getMinute());
-//        Data.text = ((EditText)findViewById(R.id.Text)).getText().toString();
-//        Data.phoneNumber = ((EditText)findViewById(R.id.Phone)).getText().toString();
-//        Data.name = ((EditText)findViewById(R.id.Name)).getText().toString();
-//        if (rbPush.isChecked())
-//            Data.type = NotificationsType.PushNotification;
-//        else
-//            Data.type = NotificationsType.SMSNotification;
-//    }
-
-    public void SetAllFromExtra()
-    {
-        Bundle extras = getIntent().getExtras();
-        String name_ = (String) extras.get("name");
-        NotificationsType type = (NotificationsType) extras.get("type");
-        String text_ = (String) extras.get("text");
-        Date datetime = (Date) extras.get("datetime");
-        String number = (String) extras.get("phonenumber");
-
-
-        Data = new NotificationsData(name_, type, datetime, text_, number);
-
-        ((EditText)findViewById(R.id.Name)).setText(name_);
-        ((EditText)findViewById(R.id.Text)).setText(text_);
-        ((EditText)findViewById(R.id.Phone)).setText(number);
-        ((DatePicker)findViewById(R.id.datePicker)).updateDate(datetime.getYear(), datetime.getMonth(), datetime.getDay());
-        ((TimePicker)findViewById(R.id.timePicker)).setHour(datetime.getHours());
-        ((TimePicker)findViewById(R.id.timePicker)).setMinute(datetime.getMinutes());
-        if (type == NotificationsType.PushNotification)
-            ((RadioButton) findViewById(R.id.rbPush)).setChecked(true);
-        else if (type == NotificationsType.SMSNotification)
-            ((RadioButton) findViewById(R.id.rbSms)).setChecked(true);
-    }
-
-    public void SetFormFromData()
-    {
-        ((EditText)findViewById(R.id.Name)).setText(Data.name);
-        ((EditText)findViewById(R.id.Text)).setText(Data.text);
-        ((EditText)findViewById(R.id.Phone)).setText(Data.phoneNumber);
-        ((DatePicker)findViewById(R.id.datePicker)).updateDate(Data.datetime.getYear(), Data.datetime.getMonth(), Data.datetime.getDay());
-        ((TimePicker)findViewById(R.id.timePicker)).setHour(Data.datetime.getHours());
-        ((TimePicker)findViewById(R.id.timePicker)).setMinute(Data.datetime.getMinutes());
-        if (Data.type == NotificationsType.PushNotification)
-            ((RadioButton) findViewById(R.id.rbPush)).setChecked(true);
-        else if (Data.type == NotificationsType.SMSNotification)
-            ((RadioButton) findViewById(R.id.rbSms)).setChecked(true);
+    private void choiseRadioButton(String button) {
+        if( button.equals(pushText) ) {
+            findViewById(R.id.phone).setVisibility(View.INVISIBLE);
+            data.type = NotificationsType.PushNotification;
+            return;
+        }
+        if( button.equals(smsText) ) {
+            findViewById(R.id.phone).setVisibility(View.VISIBLE);
+            data.type = NotificationsType.SMSNotification;
+            return;
+        }
+        //exception
+        return;
     }
 
     public static class NotificationsData {
@@ -178,8 +125,6 @@ public class CreateNotification extends AppCompatActivity {
             this.phoneNumber = phoneNumber;
         }
 
-        NotificationsData() {}
-
         @Override
         public String toString() {
             return name;
@@ -196,6 +141,7 @@ public class CreateNotification extends AppCompatActivity {
     public final static String date_text = "datetime";
     public final static String text_text = "text";
     public final static String phone_text = "phone";
+    public final static String null_text = "null";
 
     public final static String pushText = "push";
     public final static String smsText = "sms";
@@ -222,22 +168,30 @@ public class CreateNotification extends AppCompatActivity {
 
     public void onButtonSms(View view)
     {
-        findViewById(R.id.Phone).setVisibility(View.VISIBLE);
+        choiseRadioButton(smsText);
     }
 
     public void onButtonPush(View view)
     {
-        findViewById(R.id.Phone).setVisibility(View.INVISIBLE);
+        choiseRadioButton(pushText);
     }
 
     public void onButtonCreate(View view)
     {
-        //UpdateData();
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(name_text, data.name);
+        returnIntent.putExtra(text_text, data.text);
+        returnIntent.putExtra(phone_text, (data.phoneNumber == null ? null_text : data.phoneNumber));
+        returnIntent.putExtra(type_text, typeToStr(data.type));
+        returnIntent.putExtra(date_text, data.datetime.toString());
+        setResult(MainActivity.RESULT_OK, returnIntent);
+        finish();
     }
 
     public void onButtonBack(View view)
     {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        Intent returnIntent = new Intent();
+        setResult(MainActivity.RESULT_CANCEL, returnIntent);
+        finish();
     }
 }

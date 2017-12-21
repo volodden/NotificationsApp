@@ -6,19 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.volodden.notificationsapp.CreateNotification">
 
-    <!--
-        Таймер уведомления.
-    -->
-    <!--
-        Выбор типа уведомления.
-    -->
-    <!--
-        Тут фрагмент, который подключает или обычные уведомления, или тех, где будет отправка смс.
-    -->
-    <!--
-        Кнопки "Сохранить"/"отменить".
-    -->
-
     <android.support.v4.widget.NestedScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onButtonPush"
-                    android:text="Push" />
+                    android:text="@string/push" />
 
                 <RadioButton
                     android:id="@+id/rbSms"
@@ -55,26 +42,26 @@
                     android:layout_weight="1"
                     android:checked="false"
                     android:onClick="onButtonSms"
-                    android:text="SmS" />
+                    android:text="@string/sms" />
 
             </RadioGroup>
 
             <EditText
-                android:id="@+id/Name"
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="NotificationName" />
+                android:text="@string/notification_name" />
 
             <EditText
-                android:id="@+id/Text"
+                android:id="@+id/msgtext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="Write text here..." />
+                android:text="@string/msg_text" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -97,12 +84,12 @@
             </LinearLayout>
 
             <EditText
-                android:id="@+id/Phone"
+                android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="phone"
-                android:text="+79261251902" />
+                android:text="@string/phone_number_Denis" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -114,7 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Back"
+                    android:text="@string/back"
                     android:onClick="onButtonBack"/>
 
                 <Button
@@ -122,7 +109,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Create"
+                    android:text="@string/create"
                     android:onClick="onButtonCreate"/>
             </LinearLayout>
         </LinearLayout>
